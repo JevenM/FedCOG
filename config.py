@@ -17,7 +17,7 @@ def get_args():
     parser.add_argument('--comm_round', type=int, default=55, help='number of maximum communication roun')
     parser.add_argument('--init_seed', type=int, default=0, help="Random seed")
     parser.add_argument('--dropout_p', type=float, required=False, default=0.0, help="Dropout probability. Default=0.0")
-    parser.add_argument('--datadir', type=str, required=False, default="./data/", help="Data directory")
+    parser.add_argument('--datadir', type=str, required=False, default="/data/mwj/data/", help="Data directory")
     parser.add_argument('--beta', type=float, default=0.5, help='The parameter for the dirichlet distribution for data partitioning')
     parser.add_argument('--skew_class', type=int, default=2, help='The parameter for the noniid-skew for data partitioning')
     parser.add_argument('--reg', type=float, default=1e-5, help="L2 regularization strength")

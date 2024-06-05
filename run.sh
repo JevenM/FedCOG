@@ -7,15 +7,18 @@ model="simplecnn-mnist"
 sample_fraction=1.0
 comm_round=70
 start_round=50
-dir_path=./log/${dataset}_${data_partition}_${model}_beta${beta}_r${comm_round}_it${iternum}_c${client}_p${sample_fraction}
+
+# 获取当前时间
+current_time=$(date "+%Y-%m-%d_%H_%M_%S")
+dir_path=./log/${current_time}_${dataset}_${data_partition}_${model}_beta${beta}_r${comm_round}_it${iternum}_c${client}_p${sample_fraction}
 mkdir $dir_path
 
 
 ################ FedCOG ################
-python -u fedcog.py --dataset $dataset --gpu "6" --partition $data_partition --model $model --n_parties $client --sample_fraction $sample_fraction --num_local_iterations $iternum --beta $beta --start_round $start_round --comm_round $comm_round --save_model > $dir_path/fedcog.log
+# python -u fedcog.py --dataset $dataset --gpu "6" --partition $data_partition --model $model --n_parties $client --sample_fraction $sample_fraction --num_local_iterations $iternum --beta $beta --start_round $start_round --comm_round $comm_round --save_model > $dir_path/fedcog.log
 
 # ################ FedAvg ################
-# python -u fedavg.py --dataset $dataset --gpu "0" --partition $data_partition --model $model --n_parties $client --sample_fraction $sample_fraction --num_local_iterations $iternum --beta $beta --comm_round $comm_round --save_model > $dir_path/fedavg.log
+python -u fedavg.py --dataset $dataset --gpu "0" --partition $data_partition --model $model --n_parties $client --sample_fraction $sample_fraction --num_local_iterations $iternum --beta $beta --comm_round $comm_round --save_model > $dir_path/fedavg.log
 
 # ################ FedAvgM ################
 # server_momentum=0.9

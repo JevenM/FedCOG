@@ -63,7 +63,7 @@ else:
     for i in range(args.comm_round):
         party_list_rounds.append(party_list)
 
-train_local_dls, test_dl, net_dataidx_map, traindata_cls_counts, data_distributions = get_dataloader(args)
+train_local_dls, test_dl, client_num_samples, traindata_cls_counts, data_distributions = get_dataloader(args)
 model = get_model(args)   
 global_model = model(cfg['classes_size'])
 
@@ -73,15 +73,15 @@ local_models = []
 for i in range(args.n_parties):
     local_models.append(model(cfg['classes_size']))
 
-if args.fedavg_path is not None:
-    ckpt = torch.load(args.fedavg_path)
-    global_model.load_state_dict(ckpt)
+# if args.fedavg_path is not None:
+#     ckpt = torch.load(args.fedavg_path)
+#     global_model.load_state_dict(ckpt)
 
 best_acc = 0
 for round in range(args.comm_round):          # Federated round loop
-    if args.fedavg_path is not None:
-        if round < args.start_round:
-            continue
+    # if args.fedavg_path is not None:
+    #     if round < args.start_round:
+    #         continue
     party_list_this_round = party_list_rounds[round]
     if args.sample_fraction<1.0:
         print(f'>> Clients in this round : {party_list_this_round}')
@@ -95,8 +95,8 @@ for round in range(args.comm_round):          # Federated round loop
     local_train_fedavg(args, nets_this_round, train_local_dls)
 
     # Aggregation Weight Calculation
-    total_data_points = sum([len(net_dataidx_map[r]) for r in party_list_this_round])
-    fed_avg_freqs = [len(net_dataidx_map[r]) / total_data_points for r in party_list_this_round]
+    total_data_points = sum([client_num_samples[r] for r in party_list_this_round])
+    fed_avg_freqs = [client_num_samples[r] / total_data_points for r in party_list_this_round]
     if round==0 or args.sample_fraction<1.0:
         print(f'Total data point: {total_data_points}; Dataset size weight : {fed_avg_freqs}')
     
